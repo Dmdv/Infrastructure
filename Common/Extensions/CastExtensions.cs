@@ -14,9 +14,8 @@ namespace Common.Extensions
 	public static class CastExtensions
 	{
 		[CanBeNull]
-		public static TTo As<TTo>([NotNull] this object item) where TTo : class
+		public static TTo As<TTo>([CanBeNull] this object item) where TTo : class
 		{
-			Guard.CheckNotNull(item, "item");
 			return item as TTo;
 		}
 
