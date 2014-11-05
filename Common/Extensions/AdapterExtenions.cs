@@ -1,8 +1,14 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
+using System.Reflection;
+using Castle.MicroKernel.ModelBuilder.Descriptors;
+using Castle.Windsor;
+using Common.Annotations;
 using Common.Contracts;
 using Common.Extensions.Monads;
 
@@ -12,16 +18,37 @@ namespace Common.Extensions
 	{
 		private const int CommandTimeout = 300;
 
+		[PublicAPI]
+		public static TAdapter ApplyCommands<TAdapter>(
+			[NotNull] this TAdapter adapter,
+			[NotNull] Action<SqlCommand> action)
+			where TAdapter : Component, IDisposable
+		{
+			Guard.CheckNotNull(adapter, "adapter");
+			Guard.CheckNotNull(action, "action");
+
+			var property = GetCommandCollectionProperty(adapter);
+
+			property.IfNotNull(prop =>
+			{
+				var commands = prop
+					.GetValue(adapter, null)
+					.Cast<IEnumerable>()
+					.OfType<SqlCommand>();
+
+				commands.ForEach(action);
+			});
+
+			return adapter;
+		}
+
 		public static void Execute(this SqlConnection connection, Action action)
 		{
 			Guard.CheckNotNull(connection, "connection");
 			Guard.CheckNotNull(action, "action");
 
-			connection
-				.IfNot(x => x.State == ConnectionState.Open)
-				.Do(x => x.Open());
-
-			connection.Do(x => action());
+			connection.OpenIfClosed();
+			action();
 		}
 
 		public static void ExecuteAutoOpenClose(this SqlConnection connection, Action action)
@@ -29,23 +56,34 @@ namespace Common.Extensions
 			Guard.CheckNotNull(connection, "connection");
 			Guard.CheckNotNull(action, "action");
 
-			connection
-				.IfNot(x => x.State == ConnectionState.Open)
-				.Do(x => x.Open())
-				.ExecuteAndDispose(action);
+			connection.OpenIfClosed();
+
+			try
+			{
+				action();
+			}
+			finally
+			{
+				connection.Close();
+			}
 		}
 
-		//public static TReturn ExecuteAutoOpenClose<TReturn>(this SqlConnection connection, Func<TReturn> action)
-		//{
-		//	Guard.CheckNotNull(connection, "connection");
-		//	Guard.CheckNotNull(action, "action");
+		public static TReturn ExecuteAutoOpenClose<TReturn>(this SqlConnection connection, Func<TReturn> action)
+		{
+			Guard.CheckNotNull(connection, "connection");
+			Guard.CheckNotNull(action, "action");
 
-		//	return connection
-		//		.IfNot(x => x.State == ConnectionState.Open)
-		//		.Do(x => x.Open())
-		//		.ExecuteAndDispose(action);
-		//}
+			connection.OpenIfClosed();
 
+			try
+			{
+				return action();
+			}
+			finally
+			{
+				connection.Close();
+			}
+		}
 
 		public static void FillTable<TAdapter, TTable>(this TAdapter adapter, TTable dataTable)
 			where TAdapter : Component, IDisposable
@@ -58,59 +96,150 @@ namespace Common.Extensions
 
 			using (adapter)
 			{
-				using (proxy.Connection)
+				var propertyInfo = GetConnectionProperty(adapter);
+
+				if (propertyInfo == null)
 				{
-					proxy.Connection.Open();
 					proxy.Fill(dataTable);
+				}
+				else
+				{
+					var connection = propertyInfo.GetValue(adapter, null).Cast<SqlConnection>();
+					connection.ExecuteAutoOpenClose(() => proxy.Fill(dataTable));
 				}
 			}
 		}
 
-		public static TAdapter InitCommands<TAdapter>(
-			this TAdapter adapter,
-			IEnumerable<IDbCommand> commands)
-			where TAdapter : Component
+		/// <summary>
+		/// Registers all adapters from DataSet using OnCreateComponentDesciptor.
+		/// </summary>
+		/// <typeparam name="TInterface">A type which namespace is used in search.</typeparam>s
+		public static void RegisterAdaptersInNamespaceAs<TInterface>(this IWindsorContainer container)
+			where TInterface : class
 		{
-			// ReSharper disable PossibleMultipleEnumeration
-			Guard.CheckNotNull(adapter, "adapter");
-			Guard.CheckNotNull(commands, "commands");
+			Guard.CheckNotNull(container, "container");
 
-			foreach (var command in commands)
-			{
-				command.CommandTimeout = CommandTimeout;
-			}
+			var basedOnDescriptor = container.ConfigureInNamespaceAs<TInterface>();
 
-			return adapter;
-			// ReSharper restore PossibleMultipleEnumeration
+			basedOnDescriptor
+				.ConfigureFor<Component>(x =>
+					x.AddDescriptor(
+						new OnCreateComponentDescriptor<Component>((kernel, item) =>
+						{
+							var sqlConnection = kernel.Resolve<SqlConnection>();
+							item.SetupConnection(sqlConnection);
+						})));
+
+			container.Register(basedOnDescriptor);
 		}
 
-		public static TAdapter InitCommands<TAdapter>(
-			this TAdapter adapter,
-			Func<TAdapter, IEnumerable<IDbCommand>> selector)
-			where TAdapter : Component
+		public static void RegisterAdaptersInNamespaceByName<TInterface>(
+			this IWindsorContainer container,
+			Predicate<Type> predicate)
+			where TInterface : class
 		{
-			Guard.CheckNotNull(adapter, "adapter");
-			Guard.CheckNotNull(selector, "selector");
+			Guard.CheckNotNull(container, "container");
 
-			var sqlCommands = selector(adapter);
+			var basedOnDescriptor = container
+				.ConfigureInNamespaceAs<TInterface>()
+				.If(predicate);
 
-			foreach (var command in sqlCommands)
-			{
-				command.CommandTimeout = CommandTimeout;
-			}
-
-			return adapter;
+			basedOnDescriptor
+				.ConfigureFor<Component>(x =>
+					x.OnCreate(adapter =>
+					{
+						var sqlConnection = container.Resolve<SqlConnection>();
+						adapter.Cast<Component>().SetConnection(sqlConnection);
+					}));
 		}
 
-		public static TAdapter WithConnection<TAdapter>(this TAdapter adapter, SqlConnection connection)
+		public static void SetConnection<TAdapter>(
+			this TAdapter adapter,
+			SqlConnection connection)
 			where TAdapter : Component
 		{
 			Guard.CheckNotNull(adapter, "adapter");
 			Guard.CheckNotNull(connection, "connection");
 
-			dynamic proxy = adapter;
-			proxy.Connection = connection;
+			var propertyInfo = GetConnectionProperty(adapter);
+
+			if (propertyInfo != null)
+			{
+				propertyInfo.SetValue(adapter, connection, null);
+			}
+		}
+
+		public static TAdapter SetupConnection<TAdapter>(
+			this TAdapter adapter,
+			SqlConnection connection)
+			where TAdapter : Component
+		{
+			Guard.CheckNotNull(adapter, "adapter");
+			Guard.CheckNotNull(connection, "connection");
+
+			adapter.SetConnection(connection);
+
+			var property = GetCommandCollectionProperty(adapter);
+
+			if (property != null)
+			{
+				var commands = property
+					.GetValue(adapter, null)
+					.Cast<IEnumerable>()
+					.OfType<SqlCommand>();
+
+				adapter.InitCommands(x => commands, connection);
+			}
+
 			return adapter;
+		}
+
+		private static PropertyInfo GetCommandCollectionProperty<TAdapter>(TAdapter adapter)
+			where TAdapter : Component, IDisposable
+		{
+			Guard.CheckNotNull(adapter, "adapter");
+
+			return
+				adapter
+					.GetType()
+					.GetProperty("CommandCollection", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+		}
+
+		private static PropertyInfo GetConnectionProperty<TAdapter>(TAdapter adapter)
+			where TAdapter : Component, IDisposable
+		{
+			Guard.CheckNotNull(adapter, "adapter");
+
+			return
+				adapter
+					.GetType()
+					.GetProperty("Connection", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+		}
+
+		private static TAdapter InitCommands<TAdapter>(
+			this TAdapter adapter,
+			Func<TAdapter, IEnumerable<IDbCommand>> selector,
+			SqlConnection sqlConnection = null)
+			where TAdapter : Component
+		{
+			Guard.CheckNotNull(adapter, "adapter");
+			Guard.CheckNotNull(selector, "selector");
+
+			var sqlCommands = selector(adapter).ToArray();
+
+			sqlCommands.ForEach(command => command.CommandTimeout = CommandTimeout);
+			sqlConnection.Do(connection => sqlCommands.ForEach(command => command.Connection = connection));
+
+			return adapter;
+		}
+
+		private static void OpenIfClosed(this SqlConnection connection)
+		{
+			Guard.CheckNotNull(connection, "connection");
+
+			connection
+				.IfNot(x => x.State == ConnectionState.Open)
+				.Do(x => x.Open());
 		}
 	}
 }

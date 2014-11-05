@@ -22,6 +22,19 @@ namespace Common.Extensions
 		}
 
 		[PublicAPI]
+		public static TInstance IfNotNull<TInstance>(
+			[CanBeNull] this TInstance instance,
+			[NotNull] Action<TInstance> functor) where TInstance : class
+		{
+			if (instance != default (TInstance))
+			{
+				functor(instance);
+			}
+
+			return instance;
+		}
+
+		[PublicAPI]
 		public static TResult IfNotNull<TInstance, TResult>(
 			[CanBeNull] this TInstance? instance,
 			[NotNull] Func<TInstance?, TResult> functor,

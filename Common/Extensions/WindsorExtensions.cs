@@ -11,6 +11,18 @@ namespace Common.Extensions
 	{
 		private const LifestyleType DefaultLifestyleType = LifestyleType.Transient;
 
+		public static BasedOnDescriptor ConfigureInNamespaceAs<TInterface>(
+			this IWindsorContainer container,
+			LifestyleType lifestyle = DefaultLifestyleType)
+			where TInterface : class
+		{
+			Guard.CheckNotNull(container, "container");
+
+			return
+				CreateDesciptorFromAllClassesInNamespace<TInterface>()
+					.Configure(x => x.AddDescriptor(new LifestyleDescriptor<TInterface>(lifestyle)));
+		}
+
 		public static bool IsRegistered<TInterface>(this IWindsorContainer container) where TInterface : class
 		{
 			Guard.CheckNotNull(container, "container");
@@ -85,11 +97,8 @@ namespace Common.Extensions
 		{
 			Guard.CheckNotNull(container, "container");
 
-			container.Register(
-				Classes.FromAssemblyInThisApplication()
-					.IncludeNonPublicTypes()
-					.InSameNamespaceAs<TInterface>()
-					.Configure(x => x.AddDescriptor(new LifestyleDescriptor<TInterface>(lifestyle))));
+			var baseOnDescriptor = ConfigureInNamespaceAs<TInterface>(container, lifestyle);
+			container.Register(baseOnDescriptor);
 		}
 
 		public static void RegisterInstance<TInterface>(this IWindsorContainer container, TInterface instance)
@@ -139,6 +148,21 @@ namespace Common.Extensions
 				.For<TInterface>()
 				.ImplementedBy<TImplementation>()
 				.AddDescriptor(new LifestyleDescriptor<TInterface>(lifestyle));
+		}
+
+		// 1. From current assembly.
+		// 2. Non public types.
+		// 3. The same namespace.
+		// 4. All interfaces and self.
+		private static BasedOnDescriptor CreateDesciptorFromAllClassesInNamespace<TInterface>()
+			where TInterface : class
+		{
+			return Classes
+				.FromAssemblyContaining<TInterface>()
+				.IncludeNonPublicTypes()
+				.InSameNamespaceAs<TInterface>()
+				.WithService.AllInterfaces()
+				.WithService.Self();
 		}
 	}
 }
