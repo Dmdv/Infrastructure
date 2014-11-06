@@ -18,7 +18,7 @@ namespace Common.Extensions
 			[NotNull] Func<TInstance, TResult> functor,
 			TResult defaultValue = default(TResult)) where TInstance : class
 		{
-			return instance == null ? defaultValue : functor(instance);
+			return instance == default(TInstance) ? defaultValue : functor(instance);
 		}
 
 		[PublicAPI]
@@ -35,12 +35,25 @@ namespace Common.Extensions
 		}
 
 		[PublicAPI]
-		public static TResult IfNotNull<TInstance, TResult>(
+		public static TResult IfHasValue<TInstance, TResult>(
 			[CanBeNull] this TInstance? instance,
 			[NotNull] Func<TInstance?, TResult> functor,
 			TResult defaultValue = default(TResult)) where TInstance : struct
 		{
 			return instance == null ? defaultValue : functor(instance);
+		}
+
+		[PublicAPI]
+		public static TInstance? IfHasValue<TInstance>(
+			[CanBeNull] this TInstance? instance,
+			[NotNull] Action<TInstance> functor) where TInstance : struct
+		{
+			if (instance.HasValue)
+			{
+				functor(instance.Value);
+			}
+
+			return instance;
 		}
 
 		[PublicAPI]
@@ -79,7 +92,7 @@ namespace Common.Extensions
 			[CanBeNull] this TInstance instance,
 			Exception nullException) where TInstance : class
 		{
-			if (instance == null)
+			if (instance == default(TInstance))
 			{
 				throw nullException;
 			}
@@ -93,7 +106,7 @@ namespace Common.Extensions
 			[CanBeNull] this TInstance instance,
 			Func<Exception> nullExceptionGetter) where TInstance : class
 		{
-			if (instance == null)
+			if (instance == default(TInstance))
 			{
 				throw nullExceptionGetter();
 			}
@@ -119,7 +132,7 @@ namespace Common.Extensions
 			[CanBeNull] this TInstance instance,
 			Action exceptionAction) where TInstance : class
 		{
-			if (instance == null)
+			if (instance == default(TInstance))
 			{
 				exceptionAction.Invoke();
 			}
