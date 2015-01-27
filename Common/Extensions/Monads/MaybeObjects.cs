@@ -23,7 +23,9 @@ namespace Common.Extensions.Monads
 		/// <param name="source">Source object for operating</param>
 		/// <param name="handler"></param>
 		/// <returns><paramref name="source"/> object</returns>
-		public static TSource Catch<TSource>(this Tuple<TSource, Exception> source, Action<Exception> handler)
+		public static TSource Catch<TSource>(
+			this Tuple<TSource, Exception> source,
+			Action<Exception> handler)
 		{
 			if (source.Item2 != null)
 			{
@@ -40,7 +42,9 @@ namespace Common.Extensions.Monads
 		/// <param name="source">Source object for operating</param>
 		/// <param name="action">Action which should to do</param>
 		/// <returns><paramref name="source"/> object</returns>
-		public static TSource Do<TSource>(this TSource source, Action<TSource> action)
+		public static TSource Do<TSource>(
+			this TSource source,
+			Action<TSource> action)
 			where TSource : class
 		{
 			if (source != default(TSource))
@@ -59,7 +63,9 @@ namespace Common.Extensions.Monads
 		/// <param name="source">Source object for operating</param>
 		/// <param name="action">Action which should to do</param>
 		/// <returns><paramref name="source"/> object</returns>
-		public static TResult DoReturn<TSource, TResult>(this TSource source, Func<TSource, TResult> action)
+		public static TResult DoReturn<TSource, TResult>(
+			this TSource source,
+			Func<TSource, TResult> action)
 			where TSource : class
 		{
 			return source == default(TSource) ? default(TResult) : action(source);
@@ -72,7 +78,9 @@ namespace Common.Extensions.Monads
 		/// <param name="source">Source object for operating</param>
 		/// <param name="condition">Condition which should be checked</param>
 		/// <returns><paramref name="source"/> if <paramref name="condition"/> is true, or null otherwise</returns>
-		public static TSource If<TSource>(this TSource source, Func<TSource, bool> condition)
+		public static TSource If<TSource>(
+			this TSource source,
+			Func<TSource, bool> condition)
 			where TSource : class
 		{
 			return source != default(TSource) && condition(source) ? source : default(TSource);
@@ -85,15 +93,12 @@ namespace Common.Extensions.Monads
 		/// <param name="source">Source object for operating</param>
 		/// <param name="condition">Condition which should be checked</param>
 		/// <returns><paramref name="source"/> if <paramref name="condition"/> is true, or null otherwise</returns>
-		public static TSource IfNot<TSource>(this TSource source, Func<TSource, bool> condition)
+		public static TSource IfNot<TSource>(
+			this TSource source,
+			Func<TSource, bool> condition)
 			where TSource : class
 		{
-			if ((source != default(TSource)) && (condition(source) == false))
-			{
-				return source;
-			}
-
-			return default(TSource);
+			return source != default(TSource) && condition(source) == false ? source : default(TSource);
 		}
 
 		/// <summary>
@@ -121,6 +126,25 @@ namespace Common.Extensions.Monads
 		}
 
 		/// <summary>
+		/// Allows to do some conversion of <paramref name="source"/> if its not null
+		/// </summary>
+		/// <typeparam name="TSource">Type of source object</typeparam>
+		/// <typeparam name="TResult">Type of result</typeparam>
+		/// <param name="source">Source object for operating</param>
+		/// <param name="action">Conversion action which should to do</param>
+		/// <param name="defaultResult"></param>
+		/// <returns>Converted object which returns action</returns>
+		public static TResult Let<TSource, TResult>(
+			this TSource source,
+			Func<TSource, TResult> action,
+			TResult defaultResult = default(TResult))
+			where TSource : class
+			where TResult : class
+		{
+			return source == default(TSource) ? defaultResult : action(source);
+		}
+
+		/// <summary>
 		/// Allows to cast <paramref name="source"/> to <typeparamref name="TResult"/>
 		/// </summary>
 		/// <typeparam name="TResult">Type of result</typeparam>
@@ -139,14 +163,27 @@ namespace Common.Extensions.Monads
 		/// <summary>
 		/// Allows to construct <paramref name="source"/> if its is null
 		/// </summary>
-		/// <typeparam name="TInput">Type of source object</typeparam>
+		/// <typeparam name="TSource">Type of source object</typeparam>
 		/// <param name="source">Source object for operating</param>
 		/// <param name="action">Constructor action</param>
 		/// <returns><paramref name="source"/> if it is not null, or result of <paramref name="action"/> otherwise</returns>
-		public static TInput Recover<TInput>(this TInput source, Func<TInput> action)
-			where TInput : class
+		public static TSource Recover<TSource>(this TSource source, Func<TSource> action)
+			where TSource : class
 		{
 			return source ?? action();
+		}
+
+		/// <summary>
+		/// Allows for a an alternative value to be used when an object is null.   
+		/// </summary>
+		/// <typeparam name="TSource">type of object to extend</typeparam>
+		/// <param name="source">object to be extended</param>
+		/// <param name="recover">value that will be used if source is null</param>
+		/// <returns></returns>
+		public static TSource Recover<TSource>(this TSource source, TSource recover)
+			where TSource : class
+		{
+			return source ?? recover;
 		}
 
 		/// <summary>
@@ -177,19 +214,23 @@ namespace Common.Extensions.Monads
 		/// <returns>
 		/// Tuple which contains <paramref name="source"/> and info about exception (if it throws)
 		/// </returns>
-		public static Tuple<TSource, Exception> TryDo<TSource>(this TSource source, Action<TSource> action)
+		public static Tuple<TSource, Exception> TryDo<TSource>(
+			this TSource source,
+			Action<TSource> action)
 			where TSource : class
 		{
-			if (source != default(TSource))
+			if (source == default(TSource))
 			{
-				try
-				{
-					action(source);
-				}
-				catch (Exception ex)
-				{
-					return new Tuple<TSource, Exception>(source, ex);
-				}
+				return new Tuple<TSource, Exception>(null, null);
+			}
+
+			try
+			{
+				action(source);
+			}
+			catch (Exception ex)
+			{
+				return new Tuple<TSource, Exception>(source, ex);
 			}
 
 			return new Tuple<TSource, Exception>(source, null);
@@ -211,21 +252,23 @@ namespace Common.Extensions.Monads
 			Func<Exception, bool> exceptionChecker)
 			where TSource : class
 		{
-			if (source != default(TSource))
+			if (source == default(TSource))
 			{
-				try
-				{
-					action(source);
-				}
-				catch (Exception ex)
-				{
-					if (exceptionChecker(ex))
-					{
-						return new Tuple<TSource, Exception>(source, ex);
-					}
+				return new Tuple<TSource, Exception>(null, null);
+			}
 
-					throw;
+			try
+			{
+				action(source);
+			}
+			catch (Exception ex)
+			{
+				if (exceptionChecker(ex))
+				{
+					return new Tuple<TSource, Exception>(source, ex);
 				}
+
+				throw;
 			}
 
 			return new Tuple<TSource, Exception>(source, null);
@@ -276,10 +319,11 @@ namespace Common.Extensions.Monads
 		/// <param name="action">Action which should to do</param>
 		/// <param name="defaultResult">Default result</param>
 		/// <returns>Tuple which contains Converted object and info about exception (if it throws)</returns>
-		public static Tuple<TResult, Exception> TryWith<TSource, TResult>(
+		public static Tuple<TResult, Exception> TryLet<TSource, TResult>(
 			this TSource source,
 			Func<TSource, TResult> action,
-			TResult defaultResult = default(TResult)) where TSource : class
+			TResult defaultResult = default(TResult))
+			where TSource : class
 		{
 			if (source != default(TSource))
 			{
@@ -308,11 +352,12 @@ namespace Common.Extensions.Monads
 		/// <param name="exceptionChecker">Predicate to determine if exceptions should be handled</param>
 		/// <param name="defaultResult">Default result</param>
 		/// <returns>Tuple which contains Converted object and info about exception (if it throws)</returns>
-		public static Tuple<TResult, Exception> TryWith<TSource, TResult>(
+		public static Tuple<TResult, Exception> TryLet<TSource, TResult>(
 			this TSource source,
 			Func<TSource, TResult> action,
 			Func<Exception, bool> exceptionChecker,
-			TResult defaultResult = default(TResult)) where TSource : class
+			TResult defaultResult = default(TResult))
+			where TSource : class
 		{
 			if (source != default(TSource))
 			{
@@ -346,11 +391,12 @@ namespace Common.Extensions.Monads
 		/// <param name="defaultResult">Default result</param>
 		/// <param name="expectedException">Array of exception types, which should be handled</param>
 		/// <returns>Tuple which contains Converted object and info about exception (if it throws)</returns>
-		public static Tuple<TResult, Exception> TryWith<TSource, TResult>(
+		public static Tuple<TResult, Exception> TryLet<TSource, TResult>(
 			this TSource source,
 			Func<TSource, TResult> action,
 			TResult defaultResult = default(TResult),
-			params Type[] expectedException) where TSource : class
+			params Type[] expectedException)
+			where TSource : class
 		{
 			if (source != default(TSource))
 			{
@@ -372,23 +418,6 @@ namespace Common.Extensions.Monads
 			}
 
 			return new Tuple<TResult, Exception>(default(TResult), null);
-		}
-
-		/// <summary>
-		/// Allows to do some conversion of <paramref name="source"/> if its not null
-		/// </summary>
-		/// <typeparam name="TSource">Type of source object</typeparam>
-		/// <typeparam name="TResult">Type of result</typeparam>
-		/// <param name="source">Source object for operating</param>
-		/// <param name="action">Conversion action which should to do</param>
-		/// <param name="defaultResult"></param>
-		/// <returns>Converted object which returns action</returns>
-		public static TResult With<TSource, TResult>(
-			this TSource source,
-			Func<TSource, TResult> action,
-			TResult defaultResult = default(TResult)) where TSource : class
-		{
-			return source == default(TSource) ? defaultResult : action(source);
 		}
 	}
 }
