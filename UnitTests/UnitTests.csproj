@@ -63,9 +63,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common\Common.csproj">
+    <ProjectReference Include="..\Common\NetCommon.csproj">
       <Project>{546D9E2F-7628-4267-AFE6-01F45C21482E}</Project>
-      <Name>Common</Name>
+      <Name>NetCommon</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
