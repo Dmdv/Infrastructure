@@ -3,14 +3,18 @@ using Castle.Core;
 using Castle.MicroKernel.ModelBuilder.Descriptors;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
+using Common.Annotations;
 using Common.Contracts;
+using Common.Extensions;
 
-namespace Common.Extensions
+namespace WindsorCommon.Extensions
 {
-	public static class WindsorExtensions
+	public static class Windsor
 	{
-		private const LifestyleType DefaultLifestyleType = LifestyleType.Transient;
+		[PublicAPI]
+		public const LifestyleType DefaultLifestyleType = LifestyleType.Transient;
 
+		[PublicAPI]
 		public static BasedOnDescriptor ConfigureInNamespaceAs<TInterface>(
 			this IWindsorContainer container,
 			LifestyleType lifestyle = DefaultLifestyleType)
@@ -23,12 +27,14 @@ namespace Common.Extensions
 					.Configure(x => x.AddDescriptor(new LifestyleDescriptor<TInterface>(lifestyle)));
 		}
 
+		[PublicAPI]
 		public static bool IsRegistered<TInterface>(this IWindsorContainer container) where TInterface : class
 		{
 			Guard.CheckNotNull(container, "container");
 			return container.Kernel.HasComponent(typeof (TInterface));
 		}
 
+		[PublicAPI]
 		public static void Register<TInterface, TImplementation>(
 			this IWindsorContainer container,
 			LifestyleType lifestyle = DefaultLifestyleType,
@@ -48,6 +54,7 @@ namespace Common.Extensions
 			container.Register(component);
 		}
 
+		[PublicAPI]
 		public static void Register<TImplementation>(
 			this IWindsorContainer container,
 			LifestyleType lifestyle = DefaultLifestyleType,
@@ -65,6 +72,7 @@ namespace Common.Extensions
 			container.Register(component);
 		}
 
+		[PublicAPI]
 		public static void RegisterDescendantsOf<TInterface>(
 			this IWindsorContainer container,
 			FromAssemblyDescriptor assemblyDescriptor,
@@ -91,6 +99,7 @@ namespace Common.Extensions
 			container.Register(basedOnDescriptor);
 		}
 
+		[PublicAPI]
 		public static void RegisterInNamespaceAs<TInterface>(
 			this IWindsorContainer container,
 			LifestyleType lifestyle = DefaultLifestyleType) where TInterface : class
@@ -101,6 +110,7 @@ namespace Common.Extensions
 			container.Register(baseOnDescriptor);
 		}
 
+		[PublicAPI]
 		public static void RegisterInstance<TInterface>(this IWindsorContainer container, TInterface instance)
 			where TInterface : class
 		{
@@ -113,6 +123,7 @@ namespace Common.Extensions
 					.Instance(instance));
 		}
 
+		[PublicAPI]
 		public static void RegisterInterfacesFromAssembly<TInterface>(
 			this IWindsorContainer container,
 			FromAssemblyDescriptor assemblyDescriptor = null,
@@ -132,6 +143,7 @@ namespace Common.Extensions
 				.Configure(x => x.AddDescriptor(new LifestyleDescriptor<TInterface>(lifestyle))));
 		}
 
+		[PublicAPI]
 		private static ComponentRegistration<TImplementation> CreateComponent<TImplementation>(LifestyleType lifestyle)
 			where TImplementation : class
 		{
@@ -140,6 +152,7 @@ namespace Common.Extensions
 				.AddDescriptor(new LifestyleDescriptor<TImplementation>(lifestyle));
 		}
 
+		[PublicAPI]
 		private static ComponentRegistration<TInterface> CreateComponent<TInterface, TImplementation>(LifestyleType lifestyle)
 			where TImplementation : class, TInterface
 			where TInterface : class

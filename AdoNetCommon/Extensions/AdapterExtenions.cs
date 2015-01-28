@@ -10,9 +10,10 @@ using Castle.MicroKernel.ModelBuilder.Descriptors;
 using Castle.Windsor;
 using Common.Annotations;
 using Common.Contracts;
+using Common.Extensions;
 using Common.Extensions.Monads;
 
-namespace Common.Extensions
+namespace AdoNetCommon.Extensions
 {
 	public static class AdapterExtenions
 	{

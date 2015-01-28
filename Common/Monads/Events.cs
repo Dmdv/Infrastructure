@@ -1,6 +1,6 @@
 using System;
 
-namespace Common.Extensions.Monads
+namespace NetCommon.Monads
 {
 	public static class Events
 	{
@@ -29,7 +29,10 @@ namespace Common.Extensions.Monads
 		/// <param name="sender">Sender param for event</param>
 		/// <param name="args">Args param for event</param>
 		/// <returns>Source event</returns>
-		public static EventHandler<TArgs> Execute<TArgs>(this EventHandler<TArgs> source, object sender, TArgs args)
+		public static EventHandler<TArgs> Execute<TArgs>(
+			this EventHandler<TArgs> source,
+			object sender,
+			TArgs args)
 			where TArgs : EventArgs
 		{
 			if (source != null)

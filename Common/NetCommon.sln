@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCommon", "NetCommon.cspr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "..\UnitTests\UnitTests.csproj", "{99CF221A-FC4B-40FC-A8C3-85C1222534C8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdoNetCommon", "..\AdoNetCommon\AdoNetCommon.csproj", "{4AD16390-5190-4B99-947E-4D913FB638B6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindsorCommon", "WindsorCommon\WindsorCommon.csproj", "{62F50E2E-8E37-4639-970A-6315A70ACCA7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{99CF221A-FC4B-40FC-A8C3-85C1222534C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99CF221A-FC4B-40FC-A8C3-85C1222534C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99CF221A-FC4B-40FC-A8C3-85C1222534C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4AD16390-5190-4B99-947E-4D913FB638B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AD16390-5190-4B99-947E-4D913FB638B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AD16390-5190-4B99-947E-4D913FB638B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4AD16390-5190-4B99-947E-4D913FB638B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62F50E2E-8E37-4639-970A-6315A70ACCA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62F50E2E-8E37-4639-970A-6315A70ACCA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62F50E2E-8E37-4639-970A-6315A70ACCA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62F50E2E-8E37-4639-970A-6315A70ACCA7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

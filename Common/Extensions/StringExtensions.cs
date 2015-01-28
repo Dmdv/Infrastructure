@@ -29,7 +29,7 @@ namespace Common.Extensions
 			copy = SymbolsToReplace.Aggregate(copy, (current, tuple) => current.Replace(tuple.Item1, tuple.Item2));
 
 			// Pad with trailing '='s
-			switch (copy.Length%4)
+			switch (copy.Length % 4)
 			{
 				case 0:
 					break; // No pad chars in this case

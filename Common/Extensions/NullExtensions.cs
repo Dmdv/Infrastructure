@@ -148,7 +148,6 @@ namespace Common.Extensions
 			return ThrowIfNull(instance, new NullReferenceException(message));
 		}
 
-		[NotNull]
 		public static TInstance ThrowIfNull<TInstance>(
 			[CanBeNull] this TInstance? instance,
 			string message) where TInstance : struct
