@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text;
-using Common.Contracts;
+using Net.Common.Contracts;
 
 // ReSharper disable CodeCleanup
 // ReSharper disable InconsistentNaming
@@ -9,7 +9,7 @@ using Common.Contracts;
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedParameter.Global
 
-namespace Common.Extensions
+namespace Net.Common.Extensions
 {
 	public static class ExceptionExtensions
 	{

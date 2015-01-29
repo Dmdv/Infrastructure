@@ -1,7 +1,7 @@
 ﻿using System.Collections.Specialized;
-using Common.Contracts;
+using Net.Common.Contracts;
 
-namespace Common.Extensions
+namespace Net.Common.Extensions
 {
 	public static class SettingsExtension
 	{

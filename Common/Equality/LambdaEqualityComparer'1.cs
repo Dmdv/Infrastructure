@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace NetCommon.Equality
+namespace Net.Common.Equality
 {
 	public class LambdaEqualityComparer<TObj> : IEqualityComparer<TObj> where TObj : class
 	{

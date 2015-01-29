@@ -13,7 +13,7 @@ using Common.Contracts;
 using Common.Extensions;
 using Common.Extensions.Monads;
 
-namespace AdoNetCommon.Extensions
+namespace Net.AdoNetCommon.Extensions
 {
 	public static class AdapterExtenions
 	{

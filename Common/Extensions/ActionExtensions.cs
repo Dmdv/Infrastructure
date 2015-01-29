@@ -1,6 +1,6 @@
 using System;
 
-namespace Common.Extensions
+namespace Net.Common.Extensions
 {
 	public static class ActionExtensions
 	{

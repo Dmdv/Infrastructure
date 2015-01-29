@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Common.Annotations;
-using Common.Contracts;
+using Net.Common.Contracts;
+using Net.Common.Functionals;
 
 // ReSharper disable CodeCleanup
 // ReSharper disable InconsistentNaming
@@ -11,13 +12,90 @@ using Common.Contracts;
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedParameter.Global
 
-namespace Common.Extensions
+namespace Net.Common.Extensions
 {
 	/// <summary>
 	/// This class contains a set of helper methods to facilitate some common operations on enumerables.
 	/// </summary>
 	public static class EnumerableExtensions
 	{
+		/// <summary>
+		/// Converts source collection of strings to string by concatenating all its elements with some separator.
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="separator"></param>
+		/// <returns></returns>
+		public static string JoinToString(this IEnumerable<string> source, object separator)
+		{
+			return String.Join(separator.ToString(), source as string[] ?? source.ToArray());
+		}
+
+		/// <summary>
+		/// Converts source collection of type T to string by concatenating all its elements with some separator.
+		/// Each element will be converted to string.
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="separator"></param>
+		/// <returns></returns>
+		public static string JoinToString<T>(this IEnumerable<T> source, object separator)
+		{
+			return source.Select(item => item.ToString()).JoinToString(separator);
+		}
+
+		public static IEnumerable<T> SkipEmptyOrNull<T>([CanBeNull] this IEnumerable<T> values) where T : class
+		{
+			return values.WhereNotEmptyOrNull(Actions.DoNothing);
+		}
+
+		public static IEnumerable<T> WhereNotEmptyOrNull<T>(
+			[CanBeNull] this IEnumerable<T> values,
+			Action doActionIfEmptyOrNull) where T : class
+		{
+			if (values == null || !values.Any())
+			{
+				doActionIfEmptyOrNull();
+				return Enumerable.Empty<T>();
+			}
+
+			return values.Where(
+				item =>
+				{
+					if (item != null)
+					{
+						return true;
+					}
+
+					doActionIfEmptyOrNull();
+
+					return false;
+				});
+		}
+
+		/// <summary>
+		/// Creates new collection from parameters.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="values"></param>
+		/// <returns></returns>
+		public static IEnumerable<T> Yield<T>(params T[] values)
+		{
+			return values;
+		}
+
+		/// <summary>
+		/// Creates new collection with a target object as its sole element.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static IEnumerable<T> YieldSingle<T>(this T value)
+		{
+			return new[]
+			{
+				value
+			};
+		}
+
 		/// <summary>
 		/// Functional equivalent to foreach operator.
 		/// </summary>

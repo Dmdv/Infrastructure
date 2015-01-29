@@ -13,7 +13,7 @@ using Common.Annotations;
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedParameter.Global
 
-namespace Common.Contracts
+namespace Net.Common.Contracts
 {
 	/// <summary>
 	/// Contains a set of guard methods.

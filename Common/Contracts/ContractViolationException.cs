@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedParameter.Global
 
-namespace Common.Contracts
+namespace Net.Common.Contracts
 {
 	[Serializable]
 	public sealed class ContractViolationException : Exception

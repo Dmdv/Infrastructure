@@ -1,6 +1,6 @@
 using System;
 
-namespace NetCommon.Monads
+namespace Net.Common.Monads
 {
 	public static class Events
 	{

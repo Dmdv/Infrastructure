@@ -1,7 +1,7 @@
 using System;
 using Common.Annotations;
 
-namespace NetCommon.Equality
+namespace Net.Common.Equality
 {
 	public static class LambdaEqualityComparer
 	{

@@ -1,7 +1,7 @@
 ﻿using System.Linq;
-using Common.Extensions;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Net.Common.Extensions;
 
 namespace UnitTests
 {

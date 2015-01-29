@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Common.Annotations;
-using Common.Contracts;
+using Net.Common.Contracts;
 
 // ReSharper disable CodeCleanup
 // ReSharper disable InconsistentNaming
@@ -10,22 +11,19 @@ using Common.Contracts;
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedParameter.Global
 
-namespace Common.Extensions
+namespace Net.Common.Extensions
 {
 	public static class ArrayExtensions
 	{
-		[Pure]
-		public static T[] Empty<T>()
-		{
-			return EmptyArray<T>.Instance;
-		}
-
 		[Pure]
 		public static T[] Add<T>(this T[] array, T addingItem)
 		{
 			if (array == null)
 			{
-				return new[] { addingItem };
+				return new[]
+				{
+					addingItem
+				};
 			}
 
 			var result = array;
@@ -34,6 +32,12 @@ namespace Common.Extensions
 			result[array.Length] = addingItem;
 
 			return result;
+		}
+
+		[Pure]
+		public static T[] Empty<T>()
+		{
+			return EmptyArray<T>.Instance;
 		}
 
 		[Pure]
@@ -74,28 +78,30 @@ namespace Common.Extensions
 		[Pure]
 		public static T[] YieldArray<T>(this T item)
 		{
-			return new[] { item };
+			return new[]
+			{
+				item
+			};
 		}
 
 		[Pure]
 		public static T[] YieldArray<T>(this T item, bool returnEmptyIfNull)
-			where T : class 
+			where T : class
 		{
 			if (returnEmptyIfNull && item == null)
 			{
 				return Empty<T>();
 			}
 
-			return new[] { item };
+			return new[]
+			{
+				item
+			};
 		}
-
-		#region Nested type: EmptyArray
 
 		private static class EmptyArray<T>
 		{
 			internal static readonly T[] Instance = new T[0];
 		}
-
-		#endregion
 	}
 }

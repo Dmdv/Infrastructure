@@ -7,7 +7,7 @@ using Common.Annotations;
 using Common.Contracts;
 using Common.Extensions;
 
-namespace WindsorCommon.Extensions
+namespace Net.WindsorCommon.Extensions
 {
 	public static class Windsor
 	{

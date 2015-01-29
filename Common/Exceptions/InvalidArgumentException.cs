@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Common.Exceptions
+namespace Net.Common.Exceptions
 {
 	public class InvalidArgumentException : Exception
 	{

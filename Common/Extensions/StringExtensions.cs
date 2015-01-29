@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using Common.Annotations;
-using Common.Contracts;
+using Net.Common.Contracts;
 
 // ReSharper disable CodeCleanup
 // ReSharper disable InconsistentNaming
@@ -12,10 +12,21 @@ using Common.Contracts;
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedParameter.Global
 
-namespace Common.Extensions
+namespace Net.Common.Extensions
 {
 	public static class StringExtensions
 	{
+		public static string FromBase64(this string value)
+		{
+			Guard.CheckContainsText(value, "value");
+			return Encoding.UTF8.GetString(Convert.FromBase64String(value));
+		}
+
+		public static string ToBase64(this string value)
+		{
+			return Convert.ToBase64String(Encoding.UTF8.GetBytes(value));
+		}
+
 		private static readonly Tuple<char, char>[] SymbolsToReplace =
 		{
 			Tuple.Create('-', '+'),
@@ -64,13 +75,7 @@ namespace Common.Extensions
 		[StringFormatMethod("format")]
 		public static string FormatString([NotNull] this string format, params object[] values)
 		{
-			return String.Format(CultureInfo.InvariantCulture, format, values);
-		}
-
-		public static string FromBase64(this string value)
-		{
-			Guard.CheckContainsText(value, "value");
-			return Encoding.UTF8.GetString(Convert.FromBase64String(value));
+			return string.Format(CultureInfo.InvariantCulture, format, values);
 		}
 
 		[PublicAPI]

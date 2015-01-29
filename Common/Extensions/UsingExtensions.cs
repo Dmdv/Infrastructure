@@ -1,10 +1,18 @@
 using System;
-using Common.Extensions.Monads;
+using Net.Common.Monads;
 
-namespace Common.Extensions
+namespace Net.Common.Extensions
 {
 	public static class UsingExtensions
 	{
+		public static void DisposeIfNotNull(this IDisposable disposable)
+		{
+			if (disposable != null)
+			{
+				disposable.Dispose();
+			}
+		}
+
 		public static Action<Action> Disposeable(this IDisposable disposable)
 		{
 			return disposable.ExecuteAndDispose;

@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace Common.Extensions.Monads
+namespace Net.Common.Monads
 {
 	public static class MaybeNullable
 	{

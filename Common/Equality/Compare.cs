@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Common.Contracts;
+using Net.Common.Contracts;
 
 // ReSharper disable CodeCleanup
 // ReSharper disable InconsistentNaming
@@ -10,7 +10,7 @@ using Common.Contracts;
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedParameter.Global
 
-namespace NetCommon.Equality
+namespace Net.Common.Equality
 {
 	/// <summary>
 	/// Класс используется для выборки элементов коллекции, критерии уникальности которых определяеются по заданным полям.

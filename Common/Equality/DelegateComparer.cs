@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace NetCommon.Equality
+namespace Net.Common.Equality
 {
 	public class DelegateComparer<T, TIdentity> : IEqualityComparer<T> where T : class
 	{
