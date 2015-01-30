@@ -6,7 +6,8 @@ using System.Runtime.InteropServices;
 // связанные со сборкой.
 
 [assembly: AssemblyTitle("Net.Common")]
-[assembly: AssemblyDescription("Most necessary infrastructure tools to develop .NET applications without repetitive code.")]
+[assembly: AssemblyDescription("Most necessary infrastructure tools to develop .NET applications without repetitive code." +
+							   "This library provides useful contracts, extension to deal with arguments and it's validation, guards, casting and C# monads")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Dyachkov Dmitry")]
 [assembly: AssemblyProduct("Net.Common")]
