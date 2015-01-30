@@ -37,14 +37,9 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Contracts\ContractViolationException.cs">
+    <Compile Include="..\Net.Common\Contracts\ContractViolationException.cs">
       <Link>ContractViolationException.cs</Link>
     </Compile>
     <Compile Include="CheckNotNullArgumentsAspect.cs" />
