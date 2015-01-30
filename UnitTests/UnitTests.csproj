@@ -67,7 +67,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common\Net.Common.csproj">
+    <ProjectReference Include="..\Net.Common\Net.Common.csproj">
       <Project>{546D9E2F-7628-4267-AFE6-01F45C21482E}</Project>
       <Name>Net.Common</Name>
     </ProjectReference>
