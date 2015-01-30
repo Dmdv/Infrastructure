@@ -9,9 +9,10 @@ using System.Reflection;
 using Castle.MicroKernel.ModelBuilder.Descriptors;
 using Castle.Windsor;
 using Common.Annotations;
-using Common.Contracts;
-using Common.Extensions;
-using Common.Extensions.Monads;
+using Net.Common.Contracts;
+using Net.Common.Extensions;
+using Net.Common.Monads;
+using Net.WindsorCommon.Extensions;
 
 namespace Net.AdoNetCommon.Extensions
 {
@@ -43,6 +44,7 @@ namespace Net.AdoNetCommon.Extensions
 			return adapter;
 		}
 
+		[PublicAPI]
 		public static void Execute(this SqlConnection connection, Action action)
 		{
 			Guard.CheckNotNull(connection, "connection");
@@ -52,6 +54,7 @@ namespace Net.AdoNetCommon.Extensions
 			action();
 		}
 
+		[PublicAPI]
 		public static void ExecuteAutoOpenClose(this SqlConnection connection, Action action)
 		{
 			Guard.CheckNotNull(connection, "connection");
@@ -69,6 +72,7 @@ namespace Net.AdoNetCommon.Extensions
 			}
 		}
 
+		[PublicAPI]
 		public static TReturn ExecuteAutoOpenClose<TReturn>(this SqlConnection connection, Func<TReturn> action)
 		{
 			Guard.CheckNotNull(connection, "connection");
@@ -86,6 +90,7 @@ namespace Net.AdoNetCommon.Extensions
 			}
 		}
 
+		[PublicAPI]
 		public static void FillTable<TAdapter, TTable>(this TAdapter adapter, TTable dataTable)
 			where TAdapter : Component, IDisposable
 			where TTable : DataTable
@@ -114,7 +119,8 @@ namespace Net.AdoNetCommon.Extensions
 		/// <summary>
 		/// Registers all adapters from DataSet using OnCreateComponentDesciptor.
 		/// </summary>
-		/// <typeparam name="TInterface">A type which namespace is used in search.</typeparam>s
+		/// <typeparam name="TInterface">A type which namespace is used in search.</typeparam>
+		[PublicAPI]
 		public static void RegisterAdaptersInNamespaceAs<TInterface>(this IWindsorContainer container)
 			where TInterface : class
 		{
@@ -134,6 +140,7 @@ namespace Net.AdoNetCommon.Extensions
 			container.Register(basedOnDescriptor);
 		}
 
+		[PublicAPI]
 		public static void RegisterAdaptersInNamespaceByName<TInterface>(
 			this IWindsorContainer container,
 			Predicate<Type> predicate)
@@ -154,6 +161,7 @@ namespace Net.AdoNetCommon.Extensions
 					}));
 		}
 
+		[PublicAPI]
 		public static void SetConnection<TAdapter>(
 			this TAdapter adapter,
 			SqlConnection connection)
@@ -170,6 +178,7 @@ namespace Net.AdoNetCommon.Extensions
 			}
 		}
 
+		[PublicAPI]
 		public static TAdapter SetupConnection<TAdapter>(
 			this TAdapter adapter,
 			SqlConnection connection)
@@ -189,6 +198,7 @@ namespace Net.AdoNetCommon.Extensions
 					.Cast<IEnumerable>()
 					.OfType<SqlCommand>();
 
+				// ReSharper disable once PossibleMultipleEnumeration
 				adapter.InitCommands(x => commands, connection);
 			}
 
@@ -217,6 +227,7 @@ namespace Net.AdoNetCommon.Extensions
 					.GetProperty("Connection", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 		}
 
+		[PublicAPI]
 		private static TAdapter InitCommands<TAdapter>(
 			this TAdapter adapter,
 			Func<TAdapter, IEnumerable<IDbCommand>> selector,

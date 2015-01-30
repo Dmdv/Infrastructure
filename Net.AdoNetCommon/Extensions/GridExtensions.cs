@@ -1,8 +1,8 @@
 using System.Data;
 using System.Windows.Forms;
 using Common.Annotations;
-using Common.Contracts;
-using Common.Extensions;
+using Net.Common.Contracts;
+using Net.Common.Extensions;
 
 namespace Net.AdoNetCommon.Extensions
 {
