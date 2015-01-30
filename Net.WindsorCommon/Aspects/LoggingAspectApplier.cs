@@ -1,7 +1,9 @@
-﻿using Net.Logging;
+﻿using Common.Annotations;
+using Net.Logging;
 
 namespace Net.WindsorCommon.Aspects
 {
+	[PublicAPI]
 	public class LoggingAspectApplier : IAspectApplier
 	{
 		public LoggingAspectApplier(LoggingInterceptor interceptor)

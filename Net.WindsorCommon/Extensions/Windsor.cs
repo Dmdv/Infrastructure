@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using Castle.Core;
 using Castle.MicroKernel.ModelBuilder.Descriptors;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using Common.Annotations;
-using Common.Contracts;
-using Common.Extensions;
+using Net.Common.Contracts;
+using Net.Common.Extensions;
 
 namespace Net.WindsorCommon.Extensions
 {
@@ -97,6 +99,38 @@ namespace Net.WindsorCommon.Extensions
 			}
 
 			container.Register(basedOnDescriptor);
+		}
+
+		[PublicAPI]
+		public static IWindsorContainer RegisterFromAssembliesInDirectories<TBaseInterface>(
+			this IWindsorContainer container,
+			IEnumerable<string> subDirectories)
+		{
+			subDirectories.ForEach(
+				handlersDirectory => container.RegisterFromAssembliesInDirectories<TBaseInterface>(handlersDirectory));
+			return container;
+		}
+
+		[PublicAPI]
+		public static IWindsorContainer RegisterFromAssembliesInDirectories<TBaseInterface>(
+			this IWindsorContainer container,
+			string directory)
+		{
+			var targetDirectory = directory;
+			if (!Directory.Exists(targetDirectory))
+			{
+				var programDirectory = PathExtensions.GetProgramDirectoryFullPath();
+				targetDirectory = Path.Combine(programDirectory, directory);
+			}
+
+			return
+				container.Register(
+					Classes.
+						FromAssemblyInDirectory(new AssemblyFilter(targetDirectory, "*.dll"))
+						.BasedOn<TBaseInterface>()
+						.WithService
+						.FromInterface()
+						.LifestyleTransient());
 		}
 
 		[PublicAPI]

@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Castle.DynamicProxy;
-using Common.Contracts;
-using Common.Extensions;
-
+using Net.Common.Contracts;
+using Net.Common.Extensions;
 
 namespace Net.WindsorCommon.Aspects
 {
@@ -16,11 +15,10 @@ namespace Net.WindsorCommon.Aspects
 	{
 		public AspectApplier(IEnumerable<IInterceptor> aspectsToAddToServices)
 		{
-			Guard.CheckTrue(
-				aspectsToAddToServices.Any(),
-				() => new ArgumentException("aspectsToAddToServices must contain at least 1 element.", "aspectsToAddToServices"));
+			var toAddToServices = aspectsToAddToServices.ToArray();
+			Guard.CheckElementsNotNull(toAddToServices, @"aspectsToAddToServices must contain at least 1 element.");
 
-			_aspectsToAddToServices = aspectsToAddToServices;
+			_aspectsToAddToServices = toAddToServices;
 		}
 
 		public AspectApplier(IInterceptor aspectToAdd)
@@ -38,15 +36,15 @@ namespace Net.WindsorCommon.Aspects
 		{
 			CheckWrapServiceConstraints<T>();
 
-			return (T)new ProxyGenerator().CreateInterfaceProxyWithTargetInterface(
-					typeof(T),
-					service,
-					_aspectsToAddToServices.ToArray());
+			return (T) new ProxyGenerator().CreateInterfaceProxyWithTargetInterface(
+				typeof (T),
+				service,
+				_aspectsToAddToServices.ToArray());
 		}
-		 
+
 		private static void CheckWrapServiceConstraints<T>()
 		{
-			var serviceType = typeof(T);
+			var serviceType = typeof (T);
 			Guard.CheckTrue(
 				serviceType.IsInterface,
 				() => new ArgumentException(
