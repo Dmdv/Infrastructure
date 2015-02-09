@@ -25,7 +25,7 @@ namespace Net.MsAccess
 			_file = file;
 		}
 
-		public IEnumerable<string> GetTableNames()
+		public IEnumerable<string> EnumerateTables()
 		{
 			DataTable userTables;
 

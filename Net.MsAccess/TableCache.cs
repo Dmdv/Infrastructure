@@ -50,7 +50,7 @@ namespace Net.MsAccess
 			{
 				var reader = new TableReader(file);
 				var schema = new SchemaBase(file);
-				foreach (var tableName in schema.GetTableNames())
+				foreach (var tableName in schema.EnumerateTables())
 				{
 					Put(new TableKey(tableName, file), reader.FetchTable(tableName));
 				}

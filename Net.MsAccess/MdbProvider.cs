@@ -17,7 +17,7 @@ namespace Net.MsAccess
 			_cacheReader = new TableCacheReader(path);
 			Path = _cacheReader.MdbFile;
 
-			Tables = new SchemaBase(Path).GetTableNames().ToList();
+			Tables = new SchemaBase(Path).EnumerateTables().ToList();
 		}
 
 		[PublicAPI]

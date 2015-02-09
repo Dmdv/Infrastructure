@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Common.Annotations;
 using Net.Common.Contracts;
+using Net.Common.Extensions;
 
 namespace Net.MsAccess
 {
@@ -21,7 +22,10 @@ namespace Net.MsAccess
 		/// В таблицах нумерация только от 1.
 		/// </summary>
 		[PublicAPI]
-		public void Write(string tablename, IList<Tuple<string, double>> parameters, int row)
+		public void Write<TParameter>(
+			string tablename,
+			IList<Tuple<string, TParameter>> parameters,
+			int row)
 		{
 			Guard.CheckContainsText(tablename, "tablename");
 			Guard.CheckNotEmpty(parameters, "parameters");
@@ -44,24 +48,28 @@ namespace Net.MsAccess
 
 		private OleDbCommand Command { get; set; }
 
-		private static IEnumerable<OleDbParameter> CreateCommandParameters(IEnumerable<Tuple<string, double>> parameters)
+		private static IEnumerable<OleDbParameter> CreateCommandParameters<TParameter>(
+			IEnumerable<Tuple<string, TParameter>> parameters)
 		{
 			return parameters
 				.Select(tuple =>
 					new OleDbParameter(
-						string.Format("@{0}", tuple.Item1),
+						"@{0}".FormatString(tuple.Item1),
 						tuple.Item2));
 		}
 
-		private static string CreateCommandText(string tablename, IEnumerable<Tuple<string, double>> parameters, int row)
+		private static string CreateCommandText<TParameter>(
+			string tablename,
+			IEnumerable<Tuple<string, TParameter>> parameters,
+			int row)
 		{
-			var text = string.Format("update [{0}] set", tablename);
-
 			var paramsText = parameters
-				.Select(tuple => string.Format("[{0}] = @{1}", tuple.Item1, NormalizeString(tuple.Item1)))
+				.Select(tuple => "[{0}] = @{1}".FormatString(tuple.Item1, NormalizeString(tuple.Item1)))
 				.Aggregate((acc, next) => string.Join(", ", acc, next));
 
-			return string.Format("{0} {1} where Index = {2}", text, paramsText, row);
+			return
+				"update [{0}] set {1} where Index = {2}"
+					.FormatString(tablename, paramsText, row);
 		}
 
 		private static string NormalizeString(string str)
@@ -83,7 +91,7 @@ namespace Net.MsAccess
 			//        .ToLowerInvariant();
 		}
 
-		private void InitCommand(string tablename, IList<Tuple<string, double>> parameters, int row)
+		private void InitCommand<TParameter>(string tablename, IList<Tuple<string, TParameter>> parameters, int row)
 		{
 			var cmdText = CreateCommandText(tablename, parameters, row);
 			var dbParameters = CreateCommandParameters(parameters);
