@@ -3,10 +3,10 @@ using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Net.Common.Extensions;
 
-namespace UnitTests
+namespace MsAccessTests
 {
 	[TestClass]
-	public class UnitTests
+	public class ReflectionExtensionsTests
 	{
 		[TestMethod]
 		public void GetMethodInfo_should_return_method_info()

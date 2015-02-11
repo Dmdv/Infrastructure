@@ -5,9 +5,9 @@ using Net.Common.Extensions;
 
 namespace Net.MsAccess
 {
-	public class TableReader : MdbTable
+	public class MdbReader : MdbTable
 	{
-		public TableReader(string file)
+		public MdbReader(string file)
 			: base(file)
 		{
 		}

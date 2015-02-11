@@ -21,8 +21,8 @@ namespace Net.MsAccess
 		protected MdbTable(string file)
 		{
 			Guard.CheckTrue(
-				Directory.Exists(file),
-				() => new FileNotFoundException("Folder with data was not found: '{0}'".FormatString(file)));
+				File.Exists(file),
+				() => new FileNotFoundException("MS Access file was not found: '{0}'.".FormatString(file)));
 
 			MdbFile = file;
 			SubKey = Path.GetFileName(MdbFile);

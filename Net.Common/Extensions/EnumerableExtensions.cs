@@ -83,20 +83,6 @@ namespace Net.Common.Extensions
 		}
 
 		/// <summary>
-		/// Creates new collection with a target object as its sole element.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="value"></param>
-		/// <returns></returns>
-		public static IEnumerable<T> YieldSingle<T>(this T value)
-		{
-			return new[]
-			{
-				value
-			};
-		}
-
-		/// <summary>
 		/// Functional equivalent to foreach operator.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
@@ -251,17 +237,6 @@ namespace Net.Common.Extensions
 			}
 
 			return result;
-		}
-
-		/// <summary>
-		/// Creates new collection with a target object as its sole element.
-		/// </summary>
-		public static IEnumerable<T> Yield<T>(this T value)
-		{
-			return new[]
-			{
-				value
-			};
 		}
 
 		private static void CheckAssignComparer<T>(ref EqualityComparer<T> comparer)

@@ -60,13 +60,19 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="UnitTests.cs" />
+    <Compile Include="ReflectionExtensionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="MsAccessTests.cs" />
+    <Compile Include="MsAccessDDLTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Net.Common\Net.Common.csproj">
       <Project>{546D9E2F-7628-4267-AFE6-01F45C21482E}</Project>
       <Name>Net.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Net.MsAccess\Net.MsAccess.csproj">
+      <Project>{A462C171-AD7C-4490-A55A-1449A0EE91C6}</Project>
+      <Name>Net.MsAccess</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

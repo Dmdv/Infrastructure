@@ -9,7 +9,7 @@ using Net.MsAccess.Extensions;
 namespace Net.MsAccess
 {
 	[PublicAPI]
-	public class TableCacheReader : TableReader
+	public class TableCacheReader : MdbReader
 	{
 		public TableCacheReader(string file)
 			: base(file)

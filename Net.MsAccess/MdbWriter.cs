@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.OleDb;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Common.Annotations;
@@ -10,19 +11,43 @@ using Net.Common.Extensions;
 namespace Net.MsAccess
 {
 	[PublicAPI]
-	public class TableWriter : MdbTable
+	public class MdbWriter : MdbTable
 	{
-		public TableWriter(string file)
+		public MdbWriter(string file)
 			: base(file)
 		{
 		}
 
 		/// <summary>
-		/// 0 row никогда не используем.
+		/// Creates mdb database.
+		/// </summary>
+		/// <param name="path"></param>
+		[PublicAPI]
+		public static MdbWriter Create(string path)
+		{
+			Guard.CheckContainsText(path, "path");
+			var extension = Path.GetExtension(path);
+			Guard.CheckContainsText(extension, "extension");
+			// ReSharper disable once PossibleNullReferenceException
+			Guard.CheckTrue(extension.Equals(".mdb"), () => new ArgumentException("File must end with .mdb extensions"));
+
+			if (File.Exists(path))
+			{
+				return new MdbWriter(path);
+			}
+
+			using (File.Create(path))
+			{
+				return new MdbWriter(path);
+			}
+		}
+
+		/// <summary>
+		/// 0 row will never use.
 		/// В таблицах нумерация только от 1.
 		/// </summary>
 		[PublicAPI]
-		public void Write<TParameter>(
+		public void Update<TParameter>(
 			string tablename,
 			IList<Tuple<string, TParameter>> parameters,
 			int row)
@@ -32,13 +57,12 @@ namespace Net.MsAccess
 			Guard.CheckElementsNotNull(parameters, "parameters");
 			Guard.CheckTrue(row > 0, () => new ArgumentException(@"Invalid row", "row"));
 
-			InitCommand(tablename, parameters, row);
+			InitUpdateCommand(tablename, parameters, row);
 
 			using (var connection = CreateConnection())
 			{
 				using (Command)
 				{
-					// Command.CommandText = "update [table] set [column] = @var where Index = 1";
 					connection.Open();
 					Command.Connection = connection;
 					Command.ExecuteNonQuery();
@@ -58,7 +82,7 @@ namespace Net.MsAccess
 						tuple.Item2));
 		}
 
-		private static string CreateCommandText<TParameter>(
+		private static string CreateUpdateCommand<TParameter>(
 			string tablename,
 			IEnumerable<Tuple<string, TParameter>> parameters,
 			int row)
@@ -91,11 +115,11 @@ namespace Net.MsAccess
 			//        .ToLowerInvariant();
 		}
 
-		private void InitCommand<TParameter>(string tablename, IList<Tuple<string, TParameter>> parameters, int row)
+		private void InitUpdateCommand<TParameter>(string tablename, IList<Tuple<string, TParameter>> parameters, int row)
 		{
-			var cmdText = CreateCommandText(tablename, parameters, row);
+			var command = CreateUpdateCommand(tablename, parameters, row);
 			var dbParameters = CreateCommandParameters(parameters);
-			Command = new OleDbCommand(cmdText);
+			Command = new OleDbCommand(command);
 			Command.Parameters.AddRange(dbParameters.ToArray());
 		}
 	}

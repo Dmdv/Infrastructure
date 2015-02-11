@@ -48,7 +48,7 @@ namespace Net.MsAccess
 
 			foreach (var file in Directory.GetFiles(path, @"*.mdb"))
 			{
-				var reader = new TableReader(file);
+				var reader = new MdbReader(file);
 				var schema = new SchemaBase(file);
 				foreach (var tableName in schema.EnumerateTables())
 				{

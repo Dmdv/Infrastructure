@@ -75,6 +75,18 @@ namespace Net.Common.Extensions
 			return list.ToArray();
 		}
 
+		/// <summary>
+		/// Creates new collection with a target object as its sole element.
+		/// </summary>
+		[Pure]
+		public static IEnumerable<T> Yield<T>(this T value)
+		{
+			return new[]
+			{
+				value
+			};
+		}
+
 		[Pure]
 		public static T[] YieldArray<T>(this T item)
 		{
