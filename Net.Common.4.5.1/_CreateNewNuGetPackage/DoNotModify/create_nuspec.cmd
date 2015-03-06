@@ -1,0 +1,1 @@
+nuget nuspec ..\..\Net.Common.csproj

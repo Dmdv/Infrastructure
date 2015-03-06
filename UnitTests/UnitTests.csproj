@@ -66,9 +66,9 @@
     <Compile Include="MsAccessDDLTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Net.Common\Net.Common.csproj">
+    <ProjectReference Include="..\Net.Common.4.5.1\Net.Common.4.5.1.csproj">
       <Project>{546D9E2F-7628-4267-AFE6-01F45C21482E}</Project>
-      <Name>Net.Common</Name>
+      <Name>Net.Common.4.5.1</Name>
     </ProjectReference>
     <ProjectReference Include="..\Net.MsAccess\Net.MsAccess.csproj">
       <Project>{A462C171-AD7C-4490-A55A-1449A0EE91C6}</Project>

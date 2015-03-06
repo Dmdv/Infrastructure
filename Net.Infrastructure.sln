@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net.Aspects", "Net.Aspects\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net.AdoNetCommon", "Net.AdoNetCommon\Net.AdoNetCommon.csproj", "{4AD16390-5190-4B99-947E-4D913FB638B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net.Common", "Net.Common\Net.Common.csproj", "{546D9E2F-7628-4267-AFE6-01F45C21482E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net.Logging", "Net.Logging\Net.Logging.csproj", "{C7D7E1AF-B251-44B8-91D5-9DE927685C6A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{99CF221A-FC4B-40FC-A8C3-85C1222534C8}"
@@ -18,6 +16,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net.WPF.Common", "Net.WPF.Common\Net.WPF.Common.csproj", "{F4859494-6C43-4EED-A936-0C121C5F0696}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net.MsAccess", "Net.MsAccess\Net.MsAccess.csproj", "{A462C171-AD7C-4490-A55A-1449A0EE91C6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net.Common.4.5.1", "Net.Common.4.5.1\Net.Common.4.5.1.csproj", "{546D9E2F-7628-4267-AFE6-01F45C21482E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net.Common.4.0", "Net.Common.4.0\Net.Common.4.0.csproj", "{0EC438E8-AB7C-4796-B129-F7013D0BC451}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,10 +35,6 @@ Global
 		{4AD16390-5190-4B99-947E-4D913FB638B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4AD16390-5190-4B99-947E-4D913FB638B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4AD16390-5190-4B99-947E-4D913FB638B6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{546D9E2F-7628-4267-AFE6-01F45C21482E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{546D9E2F-7628-4267-AFE6-01F45C21482E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{546D9E2F-7628-4267-AFE6-01F45C21482E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{546D9E2F-7628-4267-AFE6-01F45C21482E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C7D7E1AF-B251-44B8-91D5-9DE927685C6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C7D7E1AF-B251-44B8-91D5-9DE927685C6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C7D7E1AF-B251-44B8-91D5-9DE927685C6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -57,6 +55,14 @@ Global
 		{A462C171-AD7C-4490-A55A-1449A0EE91C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A462C171-AD7C-4490-A55A-1449A0EE91C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A462C171-AD7C-4490-A55A-1449A0EE91C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{546D9E2F-7628-4267-AFE6-01F45C21482E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{546D9E2F-7628-4267-AFE6-01F45C21482E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{546D9E2F-7628-4267-AFE6-01F45C21482E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{546D9E2F-7628-4267-AFE6-01F45C21482E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0EC438E8-AB7C-4796-B129-F7013D0BC451}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EC438E8-AB7C-4796-B129-F7013D0BC451}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EC438E8-AB7C-4796-B129-F7013D0BC451}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EC438E8-AB7C-4796-B129-F7013D0BC451}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
