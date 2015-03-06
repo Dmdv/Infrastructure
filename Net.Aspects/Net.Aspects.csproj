@@ -39,7 +39,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Net.Common\Contracts\ContractViolationException.cs">
+    <Compile Include="..\Net.Common.4.5.1\Contracts\ContractViolationException.cs">
       <Link>ContractViolationException.cs</Link>
     </Compile>
     <Compile Include="CheckNotNullArgumentsAspect.cs" />
